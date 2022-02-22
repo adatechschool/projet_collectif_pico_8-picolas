@@ -2,18 +2,22 @@ pico-8 cartridge // http://www.pico-8.com
 version 29
 __lua__
 function _init()
-	x=60
-	y=60
+	x=68
+	y=65
 end
 
 function _update ()
- 
+if (btn(➡️)) x+=1
+if (btn(⬅️)) x-=1
+if (btn(⬇️)) y+=1
+if (btn(⬆️)) y-=1
+
 end
 
 function _draw ()
 	cls()
 	map (0,0,0,0)
-	spr(1,60,60)
+	spr(1,x,y)
 end
 __gfx__
 000000000000e00099bbbbbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
