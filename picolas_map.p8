@@ -1,22 +1,66 @@
 pico-8 cartridge // http://www.pico-8.com
 version 29
 __lua__
--- main
+-- menu code 
+
 function _init()
+ menu_init() 
+end
+
+function menu_init()
+	_update=menu_update
+	_draw=menu_draw
+end
+
+function menu_update()
+ if (btnp(❎)) then _initgame() 
+ end
+end
+
+function menu_draw()
+		cls(15)
+		--premiere ligne
+		rectfill(0,30,128,30,8)
+		rectfill(0,31,128,40,1)
+		rectfill(0,40,128,40,8)
+
+		--seconde ligne
+		rectfill(0,47,128,47,8)
+		rectfill(0,48,128,57,10)
+		rectfill(0,57,128,57,8)
+		
+		--texts
+		print("ada'cademy adventure ♥ ada'cademy adventure ♥ ada'cademy adventure",-70,33,7)
+  print("♥ be the future ♥",25,50,8)
+  print("press 'x' to start game",16,80,5)
+  print("anne ♥ cyril",40,100,14)
+  print("myriam ♥ helene",32,108,14)
+
+end
+-->8
+-- main
+function _initgame()
+	_update=_updategame
+	_draw=_drawgame
 	create_player()
 end
 
-function _update()
-	player_movement()
-	update_camera()
+function _updategame()
+ player_movement()
+ update_camera()
 end
 
-function _draw()
-	cls()
-	draw_map()
-	draw_player() 
-	draw_ui()
+function _drawgame()
+ cls()
+ draw_map()
+ draw_player()
+ draw_ui()
+ pal()
 end
+
+
+
+
 -->8
 -- map 
 
