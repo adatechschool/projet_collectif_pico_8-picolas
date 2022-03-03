@@ -12,7 +12,7 @@ function _init()
 end
 
 function menu_init()
-	_update=menu_update   -- affectation de la fonction menu_update dans _update
+	_update=menu_update -- affectation de la fonction menu_update dans _update
 	_draw=menu_draw  	  -- idem
 end
 
@@ -43,7 +43,7 @@ function menu_draw()
 end
 -->8
 --sources : https://fairedesjeux.fr/pico-8/
--- menu initgame
+-- menu _initgame
 function _initgame()
 	_update=_updategame
 	_draw=_drawgame
@@ -99,10 +99,6 @@ function _drawgame()
   end
  end
 end
-
-
-
-
 -->8
 --sources : https://fairedesjeux.fr/pico-8/
 -- map 
@@ -223,11 +219,14 @@ function interact(x,y)
 	elseif check_flag(4,x,y)  -- ouvre la barriere apres avoir parle a chloe
 		and p.ada>=1 then  
 			open_door(x,y)
+			sfx(7)
+			sfx(8)
 	end
 	
 	-- positions des personnages pour le dialogue avec la fonction tb_init :
 	if x==8 and y==4 then 
 		tb_init("metany",{"hello picolas! \npret pour l'adaventure\ndiversidays & inclusivedays?"})
+	music(0)
 	elseif x==0 and y==6 then 
 		tb_init("betty",{"dans ce quartier, il faut\navoir bon coeur pour pouvoir\nentrer dans les restaurants!"})
 	elseif x==11 and y==5 then 
@@ -296,7 +295,6 @@ end
 function draw_player()
 	spr(p.sprite,p.x*8+p.ox,p.y*8+p.oy,1,1,p.flip)
 end 
- 
 -->8
 --sources : https://fairedesjeux.fr/pico-8/
 -- affiche nombre de coeurs en haut a gauche
@@ -317,7 +315,6 @@ function print_outline(text,x,y)
 	print(text,x,y+1,0)
 	print(text,x,y,7)
 end
-
 -->8
 -- code de la zone de texte
 -- par profpatonildo
@@ -326,19 +323,19 @@ function tb_init(name,string) -- cette fonction demarre et definit une zone de t
     reading=true -- met la lecture a vrai lorsqu'une zone de texte a ete appelee.
     sfx(2)
     msg_title=""
-	--tableau contenant toutes les proprietes d'une zone de texte.
+-- tableau contenant toutes les proprietes d'une zone de texte.
     tb={ 
     str=string, -- les chaines de caracteres: c'est la table des chaines de caracteres passee a cette fonction dans _update()
-  	msg_title=name,
-	i=1, -- index utilise pour indiquer quelle chaine de tb.str lire.
-    cur=0, -- tampon utilise pour afficher progressivement les caracteres dans la zone de texte.
-    char=0, -- caractere courant a dessiner dans la zone de texte.
-    x=2, -- coordonnee x
-    y=104, -- coordonnee y
-    w=123, -- largeur de la boite de texte
-    h=20, -- hauteur de la boite de texte
-    col1=7, -- couleur du fond 10
-    col2=2, -- couleur de la bordure 12
+  	 msg_title=name,
+	   i=1,     -- index utilise pour indiquer quelle chaine de tb.str lire.
+    cur=0,   -- tampon utilise pour afficher progressivement les caracteres dans la zone de texte.
+    char=0,  -- caractere courant a dessiner dans la zone de texte.
+    x=2,     -- coordonnee x
+    y=104,   -- coordonnee y
+    w=123,   -- largeur de la boite de texte
+    h=20,    -- hauteur de la boite de texte
+    col1=7,  -- couleur du fond 10
+    col2=2,  -- couleur de la bordure 12
     col3=13, -- couleur du texte 8
     }
 end
@@ -347,19 +344,23 @@ function tb_update()  -- cette fonction gere la boite de texte a chaque mise a j
    
 		
 	if tb.char<#tb.str[tb.i] then -- si le message n'a pas ete traite jusqu'a son dernier caractere :
-        tb.cur+=0.5 -- augmente la memoire tampon. 0.5 est deja la vitesse maximale pour cette configuration. si vous souhaitez que les messages s'affichent plus lentement, reglez cette valeur sur une valeur inferieure. elle ne doit pas etre inferieure a 0.1 ni superieure a 0.9.
+    tb.cur+=0.5 -- augmente la memoire tampon. 0.5 est deja la vitesse maximale pour cette configuration. si vous souhaitez que les messages s'affichent plus lentement, reglez cette valeur sur une valeur inferieure. elle ne doit pas etre inferieure a 0.1 ni superieure a 0.9.
         if tb.cur>0.9 then -- si le tampon est superieur a 0,9 :
             tb.char+=1 -- definit le prochain caractere a dessiner.
             tb.cur=0    -- reinitialise le tampon.
             
 			--if (ord(tb.str[tb.i],tb.char)!=32) sfx(tb.voice) -- jouer l'effet sonore de la voix.
         end
+        
         if (btnp(5)) tb.char=#tb.str[tb.i] -- avancer au dernier caractere, pour accelerer le message.
-    elseif btnp(5) then -- s'il est deja sur le dernier caractere du message et que la touche ❎/x est enfoncee :
+    				
+    				elseif btnp(5) then -- s'il est deja sur le dernier caractere du message et que la touche ❎/x est enfoncee :
+        
         if #tb.str>tb.i then -- si le nombre de chaines a afficher est plus grand que l'index actuel (cela signifie qu'il y a un autre message a afficher ensuite) :
             tb.i+=1 -- augmenter l'index, pour afficher le message suivant sur tb.str
             tb.cur=0 -- reinitialise le tampon.
             tb.char=0 -- reinitialise la position du caractere.
+        
         else -- s'il n'y a plus de messages a afficher :
             reading=false -- definir la lecture a faux. cela permet de s'assurer que la zone de texte n'est pas dessinee a l'ecran et peut etre utilise pour reprendre le jeu normal.
         end
@@ -367,33 +368,27 @@ function tb_update()  -- cette fonction gere la boite de texte a chaque mise a j
 end
 
 function tb_draw() -- cette fonction dessine la zone de texte sans incrementer les characteres (voir tb_update pour cela)
-    if reading then -- ne dessine la boite de texte que si la lecture est vraie et si une boite de texte a ete appelee avec tb_init()
-         --titre
-    local y=95
-	rectfill(5,y,11+#tb.msg_title*4,y+8,2)  -- 1
-	rect(5,y,11+#tb.msg_title*4,y+8,2) -- 8
-	print(tb.msg_title,9,y+2,7)  -- 10
+ if reading then -- ne dessine la boite de texte que si la lecture est vraie et si une boite de texte a ete appelee avec tb_init()
+  --titre
+  local y=95
+		rectfill(5,y,11+#tb.msg_title*4,y+8,2)  -- 1
+		rect(5,y,11+#tb.msg_title*4,y+8,2) -- 8
+		print(tb.msg_title,9,y+2,7)  -- 10
 		rectfill(tb.x,tb.y,tb.x+tb.w,tb.y+tb.h,tb.col1) -- dessine l'arriere-plan
-        rect(tb.x,tb.y,tb.x+tb.w,tb.y+tb.h,tb.col2) -- dessine la bordure
-        print(sub(tb.str[tb.i],1,tb.char),tb.x+2,tb.y+2,tb.col3) -- extrait une sous-chaine de characteres et dessine le texte
-    end
+  rect(tb.x,tb.y,tb.x+tb.w,tb.y+tb.h,tb.col2) -- dessine la bordure
+  print(sub(tb.str[tb.i],1,tb.char),tb.x+2,tb.y+2,tb.col3) -- extrait une sous-chaine de characteres et dessine le texte
+ end
 end
 -->8
 -- auteur : hoschi
 -- firework particles
 -- this sample code shows
 -- how to make firework-style
--- particles
---[ function _init()
- -- crate a table for
- -- particles
- --particles={}
---end
 
 function boom(_x,_y)
- -- crate 100 particles at a location
+ -- create 100 particles at a location
  for i=0,50 do
-  spawn_particle(_x,_y)
+  		spawn_particle(_x,_y)
     spawn_particle(_x,_y)
  end
 end
@@ -436,7 +431,7 @@ function updateparticles()
    or p.y < 0
    or p.x > 128
    or p.x < 0
-   then
+  then
    del(particles,p)
   else
   
@@ -448,7 +443,7 @@ function updateparticles()
    p.age+=1
    
    --add gravity
---   p.dy+=0.15
+-- p.dy+=0.15
    p.dy+=0.005
   end
  end
@@ -456,13 +451,14 @@ end
 
 function drawparticles() 
 --iterate trough all particles
- local col
- for p in all(particles) do
-  --change color depending on age
-  if p.age > 60 then col=8
-  elseif p.age > 40 then col=9
-  elseif p.age > 20 then col=10  
-  else col=7 end
+ 	local col
+ 	for p in all(particles) do
+  	--change color depending on age
+  	if p.age > 60 then col=8
+  	elseif p.age > 40 then col=9
+  	elseif p.age > 20 then col=10  
+  	else col=7 
+  end
   
   --actually draw particle
   line(p.x,p.y,p.x+p.dx,p.y+p.dy,col)
@@ -523,11 +519,11 @@ aeeeeee0a0eeeeee0eeeeeeaeeeeee0a888888881111111178888887888888885566655555556655
 194fff41ccc0cccc88222285ff1111ff050000550000505000055000050fffff555555666555555555666555555555558777777777777778eee0eeeaeeeeeeea
 11411141cccccccc88288285ff1ff1ff050aa0550aa05050aa0550aa050fffff5566655555555551115566655555666588888888888888880000000aeeeeeeea
 f000000ff000000feeeeaeee89999998050aa0550aa05050aa0550aa05011fff5555555555555111111155555555555500000000000000000000000000000000
-0000000f009009007eeeee7e99999999050aa0550aa0506000055000051131ff5500000005001111131100050000000500000000044444400555555500000000
-fe1ff1ef09099090eecceeee9fcffcf90500005500005050aa0550aa0111111f650aa0aa050a113111111a050aa0aa050000000044f44f4405f55f5500000000
-feffffeff999999fec1cceae9ffffff90555566555555050aa0660aa0181111155000000050a111111111a0500000005000000004fdffdf40f1ff1f500000000
-ff0330fff022220f44ccccee993333990555555555555050aa0560aa11111318660aa0aa05011111111311050aa0aa05055555509ffffff90effffe500000000
-ff9999fff922229feeaaccccf9f33f9f055565555555505000055000819111115500000005011311311111050000000505955950991771990522225500000000
+0000000f009009007eeeee7e99999999050aa0550aa0506000055000051131ff550000000500111113110005000000050000f000044444400555555500000000
+fe1ff1ef09099090eecceeee9fcffcf90500005500005050aa0550aa0111111f650aa0aa050a113111111a050aa0aa05000fff0044f44f4405f55f5500000000
+feffffeff999999fec1cceae9ffffff90555566555555050aa0660aa0181111155000000050a111111111a050000000500fffff04fdffdf40f1ff1f500000000
+ff0330fff022220f44ccccee993333990555555555555050aa0560aa11111318660aa0aa05011111111311050aa0aa050fffffff9ffffff90effffe500000000
+ff9999fff922229feeaaccccf9f33f9f0555655555555050000550008191111155000000050113113111110500000005ffffffff991771990522225500000000
 ff4444ffff1111ffe8eaa9ceff3333ff0500005600005055555555551113111955666666650a111111111a05666666650909909000f77f0000f22f0000000000
 ff0ff0ffff1ff1ffeee9e9eeff0ff0ff050aa0550aa05055566155555111113155555555550aa1111311aa055555555509999990444444444444444404444444
 ff5555ff1eeeeee1f000000f01111110050aa0550aa05056661111555f13111155000000050aa3111113aa0500000005011ff1104ddddd444444444404f44f44
@@ -611,9 +607,11 @@ __sfx__
 010800001f051171511d05128151130511c0511f05124051095511015109551101510955110151095511c1511f000171001d00028100130001c0001f00024000095001010009500101000950010100095001c100
 010f00200c0430040000300000003c6150000000000000000c0430040000300000003c6150000000000000000c0430040000300000003c6150000000000000000c0430040000300000003c615000000000000000
 0110002016710167101f7101f7101b7101b710167101671014710147101f7101f7101b7101b7101671016710147101471020710207101b7101b7101871018710167101671020710207101b7101b7101871018710
-011000200c00014700147000c0433c6151b70018700187100c0000c0433c615000003c6001b70018700187000c00014700147000c0433c6151b70018700187100c0000c0433c615000003c6001b7001870018700
-00140000290502f05033050390503d75031300350003b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-0010000012410124101d1101c11017110181101411014110000000000000000000000000000000000000000000000000001b35000000000000000000000000000000000000000000000000000000000000000000
+011000321f7551f755157550c755177550e7050c705157051f7551f755157550c7550e7550c7550c755187051c7551c7551f7551c7550c7551775515755187051d7551d7551c7550c7551a7550c7550c75518705
+01140000290202f02033020390203d72031300350003b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0110002033720337323373233732337423374233742337422c2102c2122c2122c2122c2122c2122c2222c2220f3450f3450c3450c3451435514355103551035516763016152f625236252f635236351776301615
+01100020290202f02033020390203d720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
-03 41450304
+03 07060304
+03 05424344
 
