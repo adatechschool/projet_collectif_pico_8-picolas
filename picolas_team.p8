@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 29
 __lua__
---1er projet groupe ada tech school (https://adatechschool.fr/)
+--1er projet grp adatechschool.fr
 --par picolas team
 --sources : https://fairedesjeux.fr/pico-8/
 
@@ -226,7 +226,6 @@ function interact(x,y)
 	-- positions des personnages pour le dialogue avec la fonction tb_init :
 	if x==8 and y==4 then 
 		tb_init("metany",{"hello picolas! \npret pour l'adaventure\ndiversidays & inclusivedays?"})
-	music(0)
 	elseif x==0 and y==6 then 
 		tb_init("betty",{"dans ce quartier, il faut\navoir bon coeur pour pouvoir\nentrer dans les restaurants!"})
 	elseif x==11 and y==5 then 
