@@ -266,7 +266,7 @@ function interact(x,y)
 	elseif x==10 and y==40 then 
 		tb_init("jacky",{"le raciste est celui qui pense\nque tout ce qui est trop\ndifferent de lui le menace","dans sa tranquillite.\n(tahar ben jelloun)"})
 	elseif x==4 and y==40 then 
-		tb_init("biaity",{"a competences egales, un\ncandidat issu de la diversite\nva devoir envoyer quatre fois","plus de cv pour decrocher un\nentretien d'embauche. le poids\ndes stereotypes continue a\nproduire de la discrimination."})
+		tb_init("biaity",{"a competences egales, un\ncandidat issu de la diversite\nva devoir envoyer quatre fois","plus de cv pour decrocher un\nentretien d'embauche. le poids\ndes stereotypes continue a","produire de la discrimination."})
 	elseif x==27 and y==40 then 
 		tb_init("marco",{"pourquoi le logo de facebook\nest-il bleu? parce que mark\nzuckerberg est daltonien.","en effet, le fondateur de fb\na des deficiences sur la\nperception des couleurs et","le bleu et le blanc sont les\ncouleurs qu'il voit le mieux."})
 	elseif x==25 and y==39 then 
